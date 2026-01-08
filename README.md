@@ -69,15 +69,16 @@ IX. Validation and Error Handling
   6. Invalid decimal format (comma instead of dot) must be   
   rejected.
   7. Conversions using non-existing sieve sizes (where   
-  industry limitation applies) must be rejected.  
-  X. Error Feedback  
+  industry limitation applies) must be rejected.
+ 
+X. Error Feedback  
   1. All validation errors must be communicated via a clear,   
   user-visible error message.  
   2. Error messages must be descriptive and actionable (e.g.   
   “Selected sieve size does not exist in the standard sieve   
   table”).
 
-X. GUI and Usability Requirements  
+XI. GUI and Usability Requirements  
 1. The GUI must be user-friendly and visually clear.  
 2. Proper color contrast must be used for:  
 3. Labels  
