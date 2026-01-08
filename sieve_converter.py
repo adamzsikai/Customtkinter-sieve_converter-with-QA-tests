@@ -6,21 +6,19 @@ mesh = [3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 18, 20, 25, 30, 35, 40, 45, 50, 60, 70
 micron = [6730, 4760, 4000, 3360, 2830, 2380, 2000, 1680, 1410, 1190, 1000, 841, 707, 595, 500, 400, 354, 297, 250, 210, 177, 149, 125, 105, 88, 74, 63, 53, 44, 37]
 milimeter = [6.73, 4.76, 4, 3.36, 2.83, 2.38, 2, 1.68, 1.41, 1.19, 1, 0.841, 0.707, 0.595, 0.5, 0.4, 0.354, 0.297, 0.25, 0.21, 0.177, 0.149, 0.125, 0.105, 0.088, 0.074, 0.063, 0.053, 0.044, 0.037]
 
-def dropdownindicator(*args):
+def dd_entries_validation(event=None):
 
-    val1 = Unit1.get()
-    val2 = Unit2.get()
+    dropdown_validation = Unit1.get().strip() != "UNITS:" and Unit2.get().strip() != "UNITS:"
+    entry_validation = (amounte.get().strip())
 
-    if val1!= "UNITS:" and val2 != "UNITS:":
+    if dropdown_validation and entry_validation:
         button.configure(state="normal")
 
     else:
         button.configure(state="disabled")
 
-
-
-
-
+def dropdownindicator(choice):
+    dd_entries_validation()
 
 
 def sifterunit():
@@ -29,14 +27,18 @@ def sifterunit():
         Value1_selected = Unit1.get()
         Value2_selected = Unit2.get()
 
-        if Value1_selected == Value2_selected:
-            Result.set(amount)
+        if amount<=0:
+            Result.set("VALUE ERROR!")
+
+
+        elif Value1_selected == Value2_selected:
+            Result.set(f"{amount:g}")
 
         elif Value1_selected == "MESH" and Value2_selected == "MICRON":
             idx = mesh.index(int(amount))
             Result.set(micron[idx])
 
-        elif Value1_selected == "MESH" and Value2_selected == "MILIMETER":
+        elif Value1_selected == "MESH" and Value2_selected == "MILLIMETER":
             idx = mesh.index(int(amount))
             Result.set(milimeter[idx])
 
@@ -44,19 +46,19 @@ def sifterunit():
             idx = micron.index(int(amount))
             Result.set(mesh[idx])
 
-        elif Value1_selected == "MICRON" and Value2_selected == "MILIMETER":
-            
-            Result.set(amount/1000)
+        elif Value1_selected == "MICRON" and Value2_selected == "MILLIMETER":
+            fin = amount/1000
+            Result.set(f"{fin:g}")
 
-        elif Value1_selected == "MILIMETER" and Value2_selected == "MESH":
+        elif Value1_selected == "MILLIMETER" and Value2_selected == "MESH":
             idx = milimeter.index(float(amount))
             Result.set(mesh[idx])
 
-        elif Value1_selected == "MILIMETER" and Value2_selected == "MICRON":
+        elif Value1_selected == "MILLIMETER" and Value2_selected == "MICRON":
             
             Result.set(int(amount*1000))
         else:
-            Result.set("NOT FOUND.")
+            Result.set("VALUE ERROR!")
     except ValueError:
         Result.set("VALUE ERROR!")
     except Exception as e:
@@ -73,12 +75,12 @@ amounte.grid(row=2,column=2,pady=10, padx=10)
 
 ctk.CTkLabel(win,font=("Helvetica",14),text="FROM:",text_color="#04F1F1").grid(row=3,column=1,pady=10,padx=10)
 Unit1=ctk.StringVar(value="UNITS:")
-Unitt=ctk.CTkOptionMenu(win,variable=Unit1,width=170,corner_radius=10,values=["MICRON", "MESH", "MILIMETER"],command=dropdownindicator)
+Unitt=ctk.CTkOptionMenu(win,variable=Unit1,width=170,corner_radius=10,values=["MICRON", "MESH", "MILLIMETER"],command=dropdownindicator)
 Unitt.grid(row=3,column=2,pady=10, padx=10)
 
 ctk.CTkLabel(win,font=("Helvetica",14),text="TO:",text_color="#04F1F1").grid(row=4,column=1,pady=10,padx=10)
 Unit2=ctk.StringVar(value="UNITS:")
-Unite=ctk.CTkOptionMenu(win,variable=Unit2,width=170,corner_radius=10,values=["MICRON", "MESH", "MILIMETER"],command=dropdownindicator)
+Unite=ctk.CTkOptionMenu(win,variable=Unit2,width=170,corner_radius=10,values=["MICRON", "MESH", "MILLIMETER"],command=dropdownindicator)
 Unite.grid(row=4,column=2,pady=10, padx=10)
 
 
@@ -91,5 +93,7 @@ ctk.CTkLabel(win,textvariable=Result,font=("Helvetica",14),text_color="black",wi
 button=ctk.CTkButton(win,text="CONVERT",command=sifterunit,font=("Helvetica",14),width=140,text_color="black",corner_radius=10,fg_color="#04F1F1",hover_color="#6B04F1")
 button.grid(row=6,column=2,pady=15,padx=0)
 button.configure(state="disabled")
+
+amounte.bind("<KeyRelease>", dd_entries_validation)
 
 win.mainloop()
